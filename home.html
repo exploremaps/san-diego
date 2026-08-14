@@ -1,0 +1,24 @@
+---
+layout: page
+menutitle: Timeline
+title: Timeline of Featured Events
+order: 4
+---
+
+{% assign years = '' | split: "" %}
+{% assign groupedposts = site.posts | group_by_exp: "item", "item.timelinedate | date: '%Y' | slice: 0, 3" | sort: "name" %}
+
+<ul>
+{% for postgroup in groupedposts %}
+	{% assign groupedbyyear = postgroup.items | sort: "date" | group_by: "date" %}
+	{% for groupedyear in groupedbyyear %}
+		{% assign sortedposts = groupedyear.items | sort_natural: "title" %}
+		<h3>{{groupedyear.items.first.categories | slice: 1}}</h3>
+		{% for post in sortedposts %}
+		<li>{{post.timelinedate | date: "%b %d, %Y" }} - <a href="#{{post.url}}">{{post.title }}</a> {% if post.hours %}({{post.hours}}){% endif %}
+		{% if post.categories.size > 3 %}[{{post.categories | slice: 1,5 | join: ", " }}]{% endif %}
+		</li>
+		{% endfor %}
+	{% endfor %}
+{% endfor %}
+</ul>
